@@ -1,0 +1,6 @@
+{{ if eq .chezmoi.os "linux" }}
+Brewfile
+{{ end }}
+
+{{ if eq .chezmoi.os "darwin" }}
+{{ end }}
