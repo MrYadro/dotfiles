@@ -4,3 +4,5 @@ Brewfile
 
 {{ if eq .chezmoi.os "darwin" }}
 {{ end }}
+
+README.md
