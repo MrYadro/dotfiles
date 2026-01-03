@@ -1,0 +1,18 @@
+{{ if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+
+# darwin_packages.toml hash: {{ include ".chezmoidata/darwin_packages.toml" | sha256sum }}
+
+{{ if or (eq .hostType "personal") (eq .hostType "work") }}
+echo {{ index .packages.darwin.common.brews 0 }}
+{{ end }}
+
+{{ if eq .hostType "personal" }}
+echo {{ index .packages.darwin.personal.brews 0 }}
+{{ end }}
+
+{{ if eq .hostType "work" }}
+echo {{ index .packages.darwin.work.brews 0 }}
+{{ end }}
+
+{{ end }}

@@ -1,8 +1,11 @@
 {{ if eq .chezmoi.os "linux" }}
 Brewfile
+.chezmoidata/run_onchange_darwin-install-packages.sh.tmpl
+.chezmoidata/run_once_darwin-install-brew.sh.tmpl
 {{ end }}
 
 {{ if eq .chezmoi.os "darwin" }}
+.chezmoidata/run_onchange_linux-install-packages.sh.tmpl
 {{ end }}
 
 README.md

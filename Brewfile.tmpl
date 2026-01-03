@@ -1,4 +1,4 @@
-{{ if or (eq .hosttype "personal") (eq .hosttype "work") }}
+{{ if or (eq .hostType "personal") (eq .hostType "work") }}
 # Common
 tap "homebrew/bundle"
 tap "homebrew/cask"
@@ -41,7 +41,7 @@ cask "vk-calls"
 cask "vlc"
 {{ end }}
 
-{{ if eq .hosttype "personal" }}
+{{ if eq .hostType "personal" }}
 # Personal
 brew "ansible-lint"
 brew "ansible"
@@ -77,7 +77,7 @@ cask "tailscale-app"
 cask "tor-browser"
 {{ end }}
 
-{{ if eq .hosttype "work" }}
+{{ if eq .hostType "work" }}
 # Work
 cask "android-studio"
 cask "burp-suite-professional"

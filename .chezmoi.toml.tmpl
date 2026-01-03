@@ -1,11 +1,11 @@
 {{ $email := promptStringOnce . "email" "What is your email address" }}
 
 {{- $choices := list "personal" "work" "gaming" -}}
-{{- $hosttype := promptChoiceOnce . "hosttype" "What type of host are you on" $choices -}}
+{{- $hostType := promptChoiceOnce . "hostType" "What type of host are you on" $choices -}}
 
 [data]
     email = {{ $email | quote }}
-    hosttype = {{- $hosttype | quote -}}
+    hostType = {{- $hostType | quote -}}
 
 {{ if eq .chezmoi.os "linux" }}
 [pinentry]

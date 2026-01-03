@@ -1,0 +1,10 @@
+{{ if eq .chezmoi.os "linux" -}}
+#!/bin/bash
+
+# linux_packages.toml hash: {{ include ".chezmoidata/linux_packages.toml" | sha256sum }}
+
+{{ if eq .hostType "gaming" }}
+echo {{ index .packages.linux.ostree 0 }}
+{{ end }}
+
+{{ end }}
