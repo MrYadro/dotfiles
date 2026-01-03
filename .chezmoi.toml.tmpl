@@ -6,3 +6,13 @@
 [data]
     email = {{ $email | quote }}
     hosttype = {{- $hosttype | quote -}}
+
+{{ if eq .chezmoi.os "linux" }}
+[pinentry]
+    command = "pinentry"
+{{ end }}
+
+{{ if eq .chezmoi.os "darwin" }}
+[pinentry]
+    command = "pinentry-mac"
+{{ end }}
