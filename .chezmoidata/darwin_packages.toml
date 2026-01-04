@@ -1,8 +1,8 @@
 [packages.darwin.common]
-brews = [ "common" ]
+brews = ["common"]
 
 [packages.darwin.personal]
-brews = [ "personal" ]
+brews = ["personal"]
 
 [packages.darwin.work]
-brews = [ "work" ]
+brews = ["work"]

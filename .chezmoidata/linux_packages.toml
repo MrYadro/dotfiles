@@ -1,3 +1,15 @@
 [packages.linux.gaming]
-ostree = []
-flatpaks = []
+ostree = ["fish", "starship"]
+flatpaks = [
+    "org.darktable.Darktable",
+    "org.gnome.FileRoller",
+    "com.github.tchx84.Flatseal",
+    "org.freecad.FreeCAD",
+    "net.lutris.Lutris",
+    "org.openrgb.OpenRGB",
+    "com.github.Matoking.protontricks",
+    "net.davidotek.pupgui2",
+    "net.nokyan.Resources",
+    "dev.lizardbyte.app.Sunshine",
+    "io.github.flattool.Warehouse",
+]
