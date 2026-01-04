@@ -12,4 +12,5 @@ flatpaks = [
     "net.nokyan.Resources",
     "dev.lizardbyte.app.Sunshine",
     "io.github.flattool.Warehouse",
+    "com.valvesoftware.Steam",
 ]
