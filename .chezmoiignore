@@ -8,4 +8,7 @@ Brewfile
 .chezmoidata/run_onchange_linux-install-packages.sh.tmpl
 {{ end }}
 
+.github/
+install.sh
+LICENSE
 README.md

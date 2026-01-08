@@ -4,7 +4,8 @@
 # linux_packages.toml hash: {{ include ".chezmoidata/linux_packages.toml" | sha256sum }}
 
 {{ if eq .hostType "gaming" }}
-echo {{ index .packages.linux.ostree 0 }}
+sudo rpm-ostree install -y {{- range .packages.linux.gaming.ostrees }} {{ . | quote }}{{ end }}
+flatpak install -y flathub {{- range .packages.linux.gaming.flatpaks }} {{ . | quote }}{{ end }}
 {{ end }}
 
 {{ end }}

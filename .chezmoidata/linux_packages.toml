@@ -1,5 +1,5 @@
 [packages.linux.gaming]
-ostree = ["fish", "starship"]
+ostrees = ["fish", "starship"]
 flatpaks = [
     "org.darktable.Darktable",
     "org.gnome.FileRoller",
@@ -13,4 +13,5 @@ flatpaks = [
     "dev.lizardbyte.app.Sunshine",
     "io.github.flattool.Warehouse",
     "com.valvesoftware.Steam",
+    "com.heroicgameslauncher.hgl",
 ]
