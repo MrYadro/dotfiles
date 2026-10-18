@@ -1,0 +1,51 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  chezmoi:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install chezmoi
+        run: sh -c "$(curl -fsSL https://chezmoi.io/get)" -- -b "$HOME/.local/bin"
+
+      - name: Fresh-machine apply (localConfigs=false)
+        run: |
+          mkdir -p "$HOME/.config/chezmoi"
+          printf '[data]\nemail = "ci@test.local"\nhostType = "personal"\nopencodeApiKey = "testkey-ci"\nlocalConfigs = false\n' \
+            > "$HOME/.config/chezmoi/chezmoi.toml"
+          "$HOME/.local/bin/chezmoi" init --apply --exclude=scripts --source "$GITHUB_WORKSPACE"
+          "$HOME/.local/bin/chezmoi" --source "$GITHUB_WORKSPACE" managed | grep -Fx '.config/opencode/opencode.json'
+          "$HOME/.local/bin/chezmoi" --source "$GITHUB_WORKSPACE" managed | grep -Fx 'Dev/opencode.json'
+          jq -e . "$HOME/.config/opencode/opencode.json" "$HOME/Dev/opencode.json" > /dev/null
+          jq -e '.providers["zai-coding-plan"].settings.apiKey == "testkey-ci"' "$HOME/.config/opencode/opencode.json" > /dev/null
+          jq -e 'has("providers") | not' "$HOME/Dev/opencode.json" > /dev/null
+          echo "managed branch OK: files applied, valid JSON, key templated, Dev config slim"
+
+      - name: Local-configs branch (localConfigs=true)
+        run: |
+          printf '[data]\nemail = "ci@test.local"\nhostType = "personal"\nopencodeApiKey = "testkey-ci"\nlocalConfigs = true\n' \
+            > "$HOME/.config/chezmoi/chezmoi.toml"
+          if "$HOME/.local/bin/chezmoi" --source "$GITHUB_WORKSPACE" managed \
+            | grep -Fx -e '.config/opencode/opencode.json' -e 'Dev/opencode.json'; then
+            echo "FAIL: opencode files must be unmanaged when localConfigs=true"
+            exit 1
+          fi
+          echo "localConfigs branch OK: both files skipped"
+
+      - name: Secret scan
+        run: |
+          if grep -rInE 'sk-[A-Za-z0-9_-]{16,}' --exclude-dir=.git .; then
+            echo "FAIL: key-shaped literal found in repo"
+            exit 1
+          fi
+          if grep -rInE '"(apiKey|token|password)"[[:space:]]*:[[:space:]]*"[A-Za-z0-9][A-Za-z0-9_.+/=-]{15,}"' --exclude-dir=.git .; then
+            echo "FAIL: credential-shaped literal found in repo"
+            exit 1
+          fi
+          echo "secret scan OK"
