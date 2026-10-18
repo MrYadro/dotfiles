@@ -49,3 +49,52 @@ jobs:
             exit 1
           fi
           echo "secret scan OK"
+
+  render:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: macos
+            runs-on: macos-latest
+            hostType: personal
+          - name: fedora
+            runs-on: ubuntu-latest
+            container: fedora:latest
+            hostType: gaming
+    runs-on: ${{ matrix.runs-on }}
+    container: ${{ matrix.container }}
+    steps:
+      - name: Install git (container)
+        if: matrix.container != ''
+        run: dnf install -y git
+      - uses: actions/checkout@v4
+      - name: Install chezmoi
+        run: sh -c "$(curl -fsSL https://chezmoi.io/get)" -- -b "$HOME/.local/bin"
+      - name: Render and syntax-check all scripts
+        run: |
+          mkdir -p "$HOME/.config/chezmoi"
+          printf '[data]\nemail = "ci@test.local"\nhostType = "%s"\nopencodeApiKey = "testkey-ci"\nlocalConfigs = false\n' "${{ matrix.hostType }}" \
+            > "$HOME/.config/chezmoi/chezmoi.toml"
+          CH="$HOME/.local/bin/chezmoi"
+          "$CH" --source "$GITHUB_WORKSPACE" apply --dry-run
+          for s in "$GITHUB_WORKSPACE"/.chezmoiscripts/*.tmpl; do
+            "$CH" --source "$GITHUB_WORKSPACE" execute-template < "$s" | bash -n
+          done
+          echo "all scripts render and pass bash -n (${{ matrix.name }}, ${{ matrix.hostType }})"
+      - name: Assert darwin artifacts
+        if: runner.os == 'macOS'
+        run: |
+          CH="$HOME/.local/bin/chezmoi"
+          "$CH" --source "$GITHUB_WORKSPACE" cat "$HOME/Brewfile" | grep -Fx 'brew "chezmoi"'
+          "$CH" --source "$GITHUB_WORKSPACE" cat "$HOME/Brewfile" | grep -Fx 'cask "ghostty"'
+          echo "darwin artifacts OK"
+      - name: Assert linux gaming script
+        if: runner.os == 'Linux'
+        run: |
+          CH="$HOME/.local/bin/chezmoi"
+          S=$("$CH" --source "$GITHUB_WORKSPACE" execute-template < "$GITHUB_WORKSPACE/.chezmoiscripts/run_onchange_linux-install-packages.sh.tmpl")
+          echo "$S" | grep -F 'rpm-ostree install -y "fish" "starship"'
+          echo "$S" | grep -F 'flatpak install -y --noninteractive flathub'
+          echo "$S" | grep -F '"com.valvesoftware.Steam"'
+          echo "linux gaming script OK"
