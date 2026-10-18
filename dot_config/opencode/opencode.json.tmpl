@@ -1,0 +1,22 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["~/AGENTS.md"],
+  "providers": {
+    "zai-coding-plan": {
+      "settings": {
+        "apiKey": "{{ .opencodeApiKey }}"
+      },
+      "models": {
+        "glm-4.7": { "disabled": true },
+        "glm-5-turbo": { "disabled": true },
+        "glm-5.2": { "disabled": true },
+        "glm-5.2-highspeed": { "disabled": true },
+        "glm-5.3-highspeed": { "disabled": true }
+      }
+    }
+  },
+  "policies": [
+    { "action": "provider.use", "resource": "*", "effect": "deny" },
+    { "action": "provider.use", "resource": "zai-coding-plan", "effect": "allow" }
+  ]
+}

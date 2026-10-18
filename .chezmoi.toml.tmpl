@@ -1,10 +1,14 @@
 {{ $email := promptStringOnce . "email" "What is your email address" }}
+{{ $opencodeApiKey := promptStringOnce . "opencodeApiKey" "OpenCode API key (zai-coding-plan)" }}
+{{ $localConfigs := promptBoolOnce . "localConfigs" "Keep opencode configs locally maintained on this machine (chezmoi skips them)" }}
 
 {{- $choices := list "personal" "work" "gaming" -}}
 {{- $hostType := promptChoiceOnce . "hostType" "What type of host are you on" $choices -}}
 
 [data]
     email = {{ $email | quote }}
+    opencodeApiKey = {{ $opencodeApiKey | quote }}
+    localConfigs = {{ $localConfigs }}
     hostType = {{- $hostType | quote -}}
 
 {{ if eq .chezmoi.os "linux" }}
